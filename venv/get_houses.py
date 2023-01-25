@@ -4,46 +4,12 @@ from bs4 import BeautifulSoup
 import re
 import time
 import requests
+import numpy as np
 import ast
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-##year = '2021'
-##month = '12'
-##day = '01'
-
-##month2 = '01'
-##year2 = '2022'
-
-##full_date = day + '/' + month + '/' + year
-##end_date = day + '/' + month2 + '/' + year2
-
-##base_url = "https://www.propertypriceregister.ie/Website/npsra/PPR/npsra-ppr.nsf/PPR-By-Date&Start=1&Query=%5Bdt_execution_date%5D%3E=" + full_date + "%20AND%20%5Bdt_execution_date%5D%3C0" + end_date + "&County=&Year=" + year + "&StartMonth=" + month + "&EndMonth=" + month + "&Address="
-
-##responce = requests.get(base_url, verify=False)
-
-##soup = BeautifulSoup(responce.text, 'html.parser')
-
-# Extract the javascript line that contains that data I want, data is in an array called 'dataSearchResults'
-##raw_JS_Extracted = soup.find(text=re.compile('dataSearchResults'))
-
-# Extract the above specific line
-##js_Line_Extracted = raw_JS_Extracted.splitlines()[2]
-
-# Remove the first 24 & last chars from the string as it's only javascript code, Only want the 2D array object [ [] ]
-##extractedLine_toList = js_Line_Extracted[24:-1]
-
-# convert this 2D array into a python readble list
-# First arary index [1][] is the house index which contains the data for paticular house
-# second array has three indexes  [1][0], [1][1], [1][2], first [1][0] one containing Sale date, second [1][1] has sale Price and [1][2] third house address
-##housePriceList = ast.literal_eval(extractedLine_toList)
-
-# new soup object to extract the house address with the <a> tag of html
-
-# print(housePriceList)
-# print("Sold on: "+ housePriceList[13][0])
-# print("For: " + housePriceList[13][1])
-# print("At: " + housePriceList[13][2][118:-4])
+import tweepy
 
 class HouseData():
 
@@ -58,9 +24,9 @@ class HouseData():
         #Year
         self.year = str(Year)
         # End month will always be the month after startMonth
-        self.endMonth = str(int(startMonth+1))
+        self.endMonth = str(int(startMonth)+1)
         # If getting data for the Month of December we need the ending date of 1st January, of the follwoing year
-        self.endYear = str(int(Year+1))
+        self.endYear = str(int(Year)+1)
 
         # Use this for every month EXECPT DECEMBER
         self.full_Date = self.day + "/" + self.startMonth + "/" + self.year
@@ -99,8 +65,10 @@ class HouseData():
         # second array has three indexes  [1][0], [1][1], [1][2], first [1][0] one containing Sale date, second [1][1] has sale Price and [1][2] third house address
         self.housePriceList = ast.literal_eval(self.extractedLine_toList)
 
+
         return self.housePriceList
 
-houses = HouseData(12, 2015)
+houses = HouseData("03", "2022")
+d = houses.getHouseData()
 
-print(houses.getHouseData())
+np.savetxt('houses.txt', d, fmt='%s')
