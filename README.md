@@ -1,3 +1,3 @@
 # TwitterBot_IrishHousesSold
 
-!(https://imgur.com/a/a7aC9ha)
+![Twitter Profile](https://i.imgur.com/IaYub6q.png))
